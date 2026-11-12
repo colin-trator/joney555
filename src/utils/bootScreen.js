@@ -8,10 +8,6 @@
  * portal, a browser without `document.fonts` — none of them may leave someone
  * staring at a spinning cube, so the timeout dismisses it regardless.
  */
-// How long the loading screen is held even when there is nothing left to wait
-// for. Long enough to watch the web being spun, rather than only long enough
-// to avoid a flicker.
-const MIN_MS = 5000
 const MAX_MS = 3200
 const FADE_MS = 500
 
@@ -47,10 +43,6 @@ export default async function dismissBootScreen() {
   await whenPainted()
   await settle(document.fonts?.ready ?? Promise.resolve(), MAX_MS)
   await settle(whenHeroReady(), MAX_MS - (performance.now() - started))
-
-  // The floor the whole screen is held to, whatever the network did.
-  const remaining = MIN_MS - (performance.now() - started)
-  if (remaining > 0) await new Promise((resolve) => setTimeout(resolve, remaining))
 
   boot.classList.add('is-done')
   // Out of the tree once it has faded: a hidden overlay still answers hit
